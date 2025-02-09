@@ -1,0 +1,96 @@
+<source>
+  @type tail
+  format nginx
+  path /var/log/nginx/json-access.log
+  pos_file /fluentd/nginx/access.log.pos
+  format json
+  tag nginx.access
+</source>
+
+<source>
+  @type tail
+  tag syslog
+  path /fluentd/nginx/syslog
+  pos_file /fluentd/nginx/syslog.log.pos  
+
+  format syslog
+</source> 
+
+<source>
+  @type tail
+  tag nginx.error
+  path /var/log/nginx/error.log
+  pos_file /fluentd/nginx/error.log.pos
+  multiline_flush_interval 3s
+  emit_unmatched_lines true
+  <parse>
+    @type nginx_error_multiline
+  </parse>
+</source>
+
+<match nginx.access>
+  @type copy
+  <store>
+      @type elasticsearch
+      hosts http://elasticsearch:9200
+      scheme https
+      ssl_verify false
+      ssl_version TLSv1_2
+      user fluentd
+      password fluentd
+      logstash_format true
+      logstash_prefix fluentd
+      logstash_dateformat %Y.%m.%d
+      include_tag_key true
+      flush_interval 5s
+  </store>
+
+  <store>
+    @type stdout
+  </store>
+</match>
+
+<match nginx.error>
+  @type copy
+  <store>
+      @type elasticsearch
+      hosts http://elasticsearch:9200
+      scheme https
+      ssl_verify false
+      ssl_version TLSv1_2
+      user fluentd
+      password fluentd
+      logstash_format true
+      logstash_prefix fluentd
+      logstash_dateformat %Y.%m.%d
+      include_tag_key true
+      flush_interval 5s
+  </store>
+
+  <store>
+    @type stdout
+  </store>
+</match>
+
+<match syslog>
+  @type copy
+  <store>
+      @type elasticsearch
+      hosts http://elasticsearch:9200
+      scheme https
+      ssl_verify false
+      ssl_version TLSv1_2
+      user fluentd
+      password fluentd
+      index_name syslog
+#      logstash_prefix syslog
+      logstash_format true
+      logstash_dateformat %Y.%m.%d
+      include_tag_key true
+      flush_interval 5s
+  </store>
+
+  <store>
+    @type stdout
+  </store>
+</match>

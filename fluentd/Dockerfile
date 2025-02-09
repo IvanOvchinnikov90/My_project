@@ -4,6 +4,7 @@ RUN ["gem", "install", "fluent-plugin-elasticsearch", "--no-document"]
 RUN ["gem", "install", "fluent-plugin-record-modifier", "--no-document"]
 RUN ["gem", "install", "fluent-plugin-rewrite-tag-filter", "--no-document"]
 RUN ["gem", "install", "fluent-plugin-nginx-error-multiline", "--no-document"]
+RUN ["gem", "install", "fluent-plugin-syslog", "--no-document"]
 RUN mkdir -p /fluentd/nginx && \
     chown -R fluent:fluent /fluentd/nginx
 USER fluent

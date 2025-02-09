@@ -7,13 +7,19 @@ transport.port: 9300
 # The following settings, TLS certificates, and keys have been automatically
 # generated to configure Elasticsearch security features on 13-12-2024 12:08:36
 #
+
+# Разрешаем CORS запросы с указанного домена
+http.cors.enabled: true
+http.cors.allow-origin: "http://192.168.0.11:8083"
+
+# Если ваш кластер использует авторизацию, добавьте разрешенные заголовки
+http.cors.allow-headers: X-Requested-With, Content-Type, Content-Length, Authorization
 # --------------------------------------------------------------------------------
 
 # Enable security features
 xpack.security.enabled: true
 
 xpack.security.enrollment.enabled: false
-
 # Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
 xpack.security.http.ssl:
   enabled: false
